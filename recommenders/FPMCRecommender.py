@@ -35,7 +35,10 @@ class FPMCRecommender(ISeqRecommender):
 
     def fit(self, train_data):
         self._declare(train_data)
-
+        
+        # sraps: 存放训练的元组(user_id, last_item_value, pre_items_list)
+        # 经过下面的循环，train_data_supervised中last_item_value与pre_items_list
+        # 都是映射到从零开始的标号
         train_data_supervised = []
 
         for i, row in train_data.iterrows():
@@ -48,7 +51,7 @@ class FPMCRecommender(ISeqRecommender):
                     seq.append(i)
 
                 train_data_supervised.append((u, seq[len(seq) - 1], seq[:len(seq) - 1]))
-
+#####$$$ sraps--->reading $$$$######
         self.fpmc = FPMC(n_user=len(self.user_mapping), n_item=len(self.item_mapping),
                          n_factor=self.n_factor, learn_rate=self.learn_rate, regular=self.regular)
 
@@ -62,7 +65,8 @@ class FPMCRecommender(ISeqRecommender):
         context = []
         for item in user_profile:
             context.append(self.item_mapping[item])
-
+        
+        # sraps：items为与scores对应的商品index，scores已降序排列
         items, scores = self.fpmc.evaluation_recommender(self.user_mapping[user_id], context)
         recommendations = []
 
@@ -74,7 +78,8 @@ class FPMCRecommender(ISeqRecommender):
         self.user_mapping = {}
         self.item_mapping = {}
         self.reverse_item_mapping = {}
-
+        
+        # sraps: 此处不是计数，而是编号，把各种id映射到从0开始的连续编号
         user_counter = 0
         item_counter = 0
         for i, row in data.iterrows():

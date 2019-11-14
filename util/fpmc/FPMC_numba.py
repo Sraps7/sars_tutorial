@@ -20,7 +20,8 @@ class FPMC(FPMC_basic.FPMC):
         acc, mrr = evaluation_jit(data_3_list[0], data_3_list[1], data_3_list[2], self.VUI_m_VIU, self.VIL_m_VLI)
 
         return acc, mrr
-
+    
+    # sraps: 返回用户user购买每个可能商品的概率,降序：第一项为按照scores降序的商品index，第二项为对应的scores
     def evaluation_recommender(self, user, user_profile):
         np.dot(self.VUI, self.VIU.T, out=self.VUI_m_VIU)
         np.dot(self.VIL, self.VLI.T, out=self.VIL_m_VLI)

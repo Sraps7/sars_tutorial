@@ -41,7 +41,10 @@ class FPMC:
         for l in b_tm1:
             acc_val += np.dot(self.VIL[i], self.VLI[l])
         return (np.dot(self.VUI[u], self.VIU[i]) + (acc_val / len(b_tm1)))
-
+    
+    # sraps:
+    # 返回的是用户u下一个选择的概率（得分）（所有可能的选择）（b_tml为历史数据）
+    # （在函数evaluation中调用，可以看evaluatin来帮助理解）
     def compute_x_batch(self, u, b_tm1):
         former = self.VUI_m_VIU[u]
         latter = np.mean(self.VIL_m_VLI[:, b_tm1], axis=1).T
@@ -82,6 +85,10 @@ class FPMC:
                 z2 = self.compute_x(u, j, b_tm1)
                 delta = 1 - sigmoid(z1 - z2)
 
+                # sraps:
+                # 更新权值的时候，计算了偏导，将delta作为损失函数，偏导后，前一项系数应为delta*(1-delta)，
+                # 这里省略了delta，原因未知；   这样的效果是，更新的步长其实变大了
+                # 使用的是L1正则化，为什么不用L2，原因位置
                 VUI_update = self.learn_rate * (delta * (self.VIU[i] - self.VIU[j]) - self.regular * self.VUI[u])
                 VIUi_update = self.learn_rate * (delta * self.VUI[u] - self.regular * self.VIU[i])
                 VIUj_update = self.learn_rate * (-delta * self.VUI[u] - self.regular * self.VIU[j])

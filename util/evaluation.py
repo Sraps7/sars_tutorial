@@ -82,7 +82,8 @@ def evaluate_sequence(recommender, seq, evaluation_functions, user, given_k, loo
     if not user_profile or not ground_truth:
         # if any of the two missing all evaluation functions are 0
         return np.zeros(len(evaluation_functions))
-
+    
+    # sraps: r: [[item_id, score],[item_id, score],...,[item_id, score]]; 按照score降序排列
     r = recommender.recommend(user_profile, user)[:top_n]
 
     if not r:
